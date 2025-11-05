@@ -1,6 +1,6 @@
 date.textContent = time();
 
-let score, answer, level;
+let score, answer, level, userName;
 const levelArr = document.getElementsByName("level");
 const scoreArr=[];
 
@@ -12,17 +12,19 @@ userNameBtn.addEventListener("click", setUserName);
 giveUpBtn.addEventListener("click", giveUp); 
 
 function time(){
-    const months = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const suffixes = ["th", "st", "nd", "rd"];
 
     let d = new Date();
     let monthName = months[d.getMonth()];
     let date = d.getDate();
-
+    let hours = d.getHours();
+    let minutes = d.getMinutes().toString().padStart(2, '0');
+    let seconds = d.getSeconds().toString().padStart(2, '0');
  
     let suffix = suffixes[(date % 10 > 3 || Math.floor(date % 100 / 10) === 1) ? 0 : date % 10];
 
-    return monthName + " " + date + suffix + ", " + d.getFullYear();
+    return monthName + " " + date + suffix + ", " + d.getFullYear() + " " + hours + ":" + minutes + ":" + seconds;
 }
 
 function makeGuess(){
@@ -53,6 +55,7 @@ function makeGuess(){
     } else {
         msg.textContent += "  hot";
     }
+
 }
 function reset(){
     guessBtn.disabled = true;
@@ -60,54 +63,58 @@ function reset(){
     guess.placeholder = "";
     guess.disabled = true;
     playBtn.disabled = false;
+    giveUpBtn.disabled = true;
+    well.innerHTML = "";
     for(let i=0; i<levelArr.length; i++){
         levelArr[i].disabled = false;
     }
 }
 function updateScore(){
     scoreArr.push(score);
-    wins.textContent = "total wins: "+ scoreArr.length;
-    let sum = 0
+    wins.innerHTML = "total wins: "+ scoreArr.length;
+      well.innerHTML = "Grade: " + (score < 2 ? "Great" : score < 3 ? "Well" : score < 7 ? "average" : "FAILED");
+    let sum = 0;
     scoreArr.sort((a,b) => a-b);
-    const lb  = document.getElementsByName("leaderboard");
+    let lb  = document.getElementsByName("leaderboard");
 
     for(let i = 0; i<scoreArr.length;i++){
-        sum +=scoreArr[i];
         if(i < lb.length){
             lb[i].textContent = scoreArr[i];
         }
+        sum += scoreArr[i];
     }
-    let avg = sum/score.Arr.length;
-    aveScore.textContent = "average score: "+avg.toFixed(2);
+    let avg = sum/scoreArr.length;
+    avgScore.innerHTML = "average score: "+avg.toFixed(2);
 
 }
-function setUserName() {
-    const nameInput = document.getElementById("name");
-    const name = nameInput.value;
-    if (name === "") {
-        msg.textContent = "Please enter your name to continue.";
+
+function setUserName(){
+    let inputName = document.getElementById("nameInput").value.trim();
+    if(inputName == "") {
+        alert = "Please enter your name to continue.";
         return;
     }
-    msg.textContent = "Hi " + name + ", have a good day!";
+
+    userName = inputName.charAt(0).toUpperCase();
+    for(let i = 1; i < inputName.length; i++) {
+        userName += inputName.charAt(i).toLowerCase();
+    }
+    welcomeMsg.textContent = "Welcome, " + userName + "!";
+    document.getElementById("nameInput").disabled = true;
+    document.getElementById("setNameBtn").disabled = true;
     playBtn.disabled = false;
+    msg.textContent = "Hi " + setUserName.value + ", have a good day!";
 }
+
 function giveUp() {
     score = level;
     msg.textContent = "You gave up! The correct answer was " + answer + ". Your score is set to " + score + ".";
+    scoreArr.push(score);
+    updateScore();
     reset();
     
-    playBtn.disabled = false;
-    guessBtn.disabled = true;
-    guess.value = "";
-    guess.placeholder = "";
-    guess.disabled = true;
-    giveUpBtn.disabled = true;
-    for (let i = 0; i < levelArr.length; i++) {
-        levelArr[i].disabled = false;
-        levelArr[i].checked = i === 0; 
+    
     }
-    msg.textContent = "select a level";
-}
 
 function play(){
     playBtn.disabled = true;
@@ -121,7 +128,7 @@ function play(){
         }
     }
     answer = Math.floor(Math.random() * level) + 1;
-    makeGuess.textContent = "Guess a number 1" + level;
-    guess.placeholder = "Enter your guess"; 
+    makeGuess.textContent = "Guess a number " + level;
+    guess.questionBank = "Enter your guess"; 
     score = 0;
-}  
+}
