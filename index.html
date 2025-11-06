@@ -1,32 +1,209 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>JavaScript Number Guessing Game</title>
-    <script src="script.js" defer></script>
-  </head>
-  <body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JavaScript Number Guessing Game</title>
+  
+  <!-- Google Font Montserrat -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
+  
+  <style>
+    /* Reset & base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #121820;
+      margin: 0;
+      padding: 20px;
+      color: #d0d9ff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    /* Container to limit width and center content */
+    .container {
+      width: 100%;
+      max-width: 480px;
+      background-color: #1f2a44;
+      border-radius: 10px;
+      padding: 25px 30px;
+      box-shadow: 0 0 20px #2a3f7f;
+    }
+
+    h3 {
+      color: #7db9e8;
+      margin-top: 25px;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    input[type="text"] {
+      padding: 10px 12px;
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid #3a4e7b;
+      background-color: #121b33;
+      color: #d0d9ff;
+      font-size: 16px;
+      margin-bottom: 15px;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]::placeholder {
+      color: #7a8dbb;
+    }
+
+    input[type="text"]:focus {
+      border-color: #7db9e8;
+      outline: none;
+    }
+
+    /* Radio buttons and labels */
+    .levels {
+      margin-bottom: 15px;
+    }
+    .levels input[type="radio"] {
+      accent-color: #7db9e8;
+      margin-right: 6px;
+      cursor: pointer;
+    }
+    .levels label {
+      margin-right: 20px;
+      color: #c0d1ff;
+      font-weight: 500;
+      cursor: pointer;
+      user-select: none;
+      font-size: 16px;
+    }
+
+    /* Buttons */
+    button {
+      background-color: #3a5bbf;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-right: 10px;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    button:disabled {
+      background-color: #606e9c;
+      cursor: not-allowed;
+    }
+    button:hover:not(:disabled) {
+      background-color: #2a3f7f;
+    }
+
+    /* Message box */
+    #msg {
+      background-color: #1f2a44;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      min-height: 45px;
+      color: #c0d1ff;
+      box-shadow: 0 0 10px #2a3f7f;
+      margin-bottom: 20px;
+      user-select: none;
+    }
+
+    /* Paragraphs for stats */
+    p {
+      margin: 6px 0;
+      font-weight: 500;
+      color: #a9b9ff;
+      user-select: none;
+    }
+
+    /* Leaderboard */
+    ol {
+      padding-left: 20px;
+      margin-top: 10px;
+      color: #c0d1ff;
+    }
+    li[name="leaderboard"] {
+      background-color: #2a3f7f;
+      margin-bottom: 8px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      box-shadow: 0 0 5px #3a5bbf;
+      user-select: none;
+    }
+
+    /* Date display */
+    #date {
+      font-size: 14px;
+      font-style: italic;
+      color: #7a8dbb;
+      margin-bottom: 25px;
+      text-align: center;
+      user-select: none;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 520px) {
+      .container {
+        padding: 20px 15px;
+      }
+      button {
+        padding: 10px 14px;
+        font-size: 14px;
+        margin-right: 6px;
+      }
+      input[type="text"] {
+        font-size: 14px;
+      }
+      .levels label {
+        font-size: 14px;
+        margin-right: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
     <p id="date"></p>
 
     <h3>Name</h3>
-     <input type="text" id="nameInput">
-     <button id="userNameBtn">enter</button>
-     <h3 id="welcomeMsg">Derek has big D</h3>
+    <input type="text" id="nameInput" placeholder="Enter your name" />
+    <button id="userNameBtn">Enter</button>
+    <h3 id="welcomeMsg">Welcome to the game</h3>
 
     <h3>Level</h3>
-    <input type="radio" name="level" id="e" value="3" checked><label for="e">Easy</label>
-    <input type="radio" name="level" id="m" value="10"><label for="m">Medium</label>
-    <input type="radio" name="level" id="h" value="100"><label for="h">Hard</label>
+    <div class="levels">
+      <input type="radio" name="level" id="e" value="3" checked />
+      <label for="e">Easy</label>
+
+      <input type="radio" name="level" id="m" value="10" />
+      <label for="m">Medium</label>
+
+      <input type="radio" name="level" id="h" value="100" />
+      <label for="h">Hard</label>
+    </div>
 
     <button id="playBtn">Play</button>
 
     <h3 id="msg">Select a Level</h3>
-    <input type="text" id="guess">
+    <input type="text" id="guess" placeholder="Enter your guess" />
     <button id="guessBtn" disabled>Guess</button>
     <button id="giveUpBtn" disabled>Give Up</button>
 
     <h3>Stats</h3>
     <p id="wins">Total wins: 0</p>
-    <p id="avgScore">Average Score: </p>
+    <p id="avgScore">Average Score: N/A</p>
+    <p id="fastest">Fastest game: N/A</p>
+    <p id="averageTime">Average time: N/A</p>
+    <p id="roundTime">Current round: 0s</p>
+    <p id="streak">Current Streak: 0</p>
     <p id="well">Grade: </p>
 
     <h3>Leaderboard</h3>
@@ -35,5 +212,8 @@
       <li name="leaderboard">100</li>
       <li name="leaderboard">100</li>
     </ol>
-  </body>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
 </html>
